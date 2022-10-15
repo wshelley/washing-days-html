@@ -8,8 +8,8 @@ function reloadWashingDays() {
 
   var ideal_times = [];
   var weekday_ordered = [];
-
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitude=" + args.lon + "&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m,windgusts_10m,direct_radiation&windspeed_unit=mph").then(function (response) {
+  //fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitude=" + args.lon + "&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m,windgusts_10m,direct_radiation&windspeed_unit=mph").then(function (response) {
+  fetch("https://api.open-meteo.com/v1/gfs?latitude=" + args.lat + "&longitude=" + args.lon + "&hourly=temperature_2m,relativehumidity_2m,precipitation,windspeed_10m,windgusts_10m,direct_radiation&windspeed_unit=mph").then(function (response) {
     // The API call was successful!
     return response.json();
   }).then(function (data) {
@@ -86,6 +86,7 @@ function reloadWashingDays() {
             var timespan = new Date(forecast.time[index]) - startTime
             const msInHour = 1000 * 60 * 60;
             var timespan_hrs = Math.round(Math.abs(timespan) / msInHour);
+            ideal_times[ideal_times.length - 1].timespan_hrs = timespan_hrs;
             ideal_times[ideal_times.length - 1].timespan = startTime.getHours() + ":00-" + ideal_times[ideal_times.length - 1].endDate.getHours() + ":00  (" + timespan_hrs + " hours)";
             started = false;
           }
@@ -105,7 +106,10 @@ function reloadWashingDays() {
     console.log(ideal_times);
     var summary = "Summary of Ideal Times for Drying Outside<br>";
     for (let index = 0; index < ideal_times.length; ++index) {
-      summary = summary + ideal_times[index].day  + " " + ideal_times[index].timespan + " - Score: " + Math.round(ideal_times[index].totalscore) + "<br>"
+      if (ideal_times[index].timespan_hrs > 3)
+      {
+        summary = summary + ideal_times[index].day  + " " + ideal_times[index].timespan + " - Score: " + Math.round(ideal_times[index].totalscore) + "<br>"
+      }
     }
     document.getElementById("summary").innerHTML = summary;
     /*var mydata = getArray(forecast);
