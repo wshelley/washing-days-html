@@ -3,7 +3,7 @@ var args = {
   lon: -3.35
 }
 
-const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 var ideal_times = [];
 var weekday_ordered = [];
@@ -42,10 +42,13 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
   forecast.day = [];
   forecast.rainlarge = [];
   forecast.score = [];
+  var scoresubtotal;
+  var started = false;
   for (let index = 0; index < forecast.time.length; ++index) {
       var recordDate = new Date(forecast.time[index]);
       var day = weekday[recordDate.getDay()];
       forecast.day[index] = day;
+      var startTime;
       forecast.rainlarge[index] = forecast.precipitation[index] * 20;
       var sunscore = forecast.direct_radiation[index];
       var windscore = (2 *  forecast.windspeed_10m[index]);
@@ -59,9 +62,32 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
       forecast.direct_radiation[index] > 50)
       {
         forecast.chart[index] = "Ideal";
+        if (started == false)
+        {
+          started = true;
+          startTime = new Date(forecast.time[index]);
+          scoresubtotal = forecast.score[index];
+        }
+        else
+        {
+          scoresubtotal = scoresubtotal + forecast.score[index];
+        }
       }
       else
       {
+        if (started == true)
+        {
+          ideal_times.push({"startDate":startTime});
+          ideal_times[ideal_times.length - 1].endDate = new Date(forecast.time[index])
+          ideal_times[ideal_times.length - 1].day = weekday[ideal_times[ideal_times.length - 1].endDate.getDay()];
+          ideal_times[ideal_times.length - 1].status = "Ideal"
+          ideal_times[ideal_times.length - 1].totalscore = scoresubtotal;
+          var timespan = new Date(forecast.time[index]) - startTime
+          const msInHour = 1000 * 60 * 60;
+          var timespan_hrs = Math.round(Math.abs(timespan) / msInHour);
+          ideal_times[ideal_times.length - 1].timespan = startTime.getHours() + ":00-" + ideal_times[ideal_times.length - 1].endDate.getHours() + ":00  (" + timespan_hrs + " hours)";
+          started = false;
+        }
         if (forecast.precipitation[index] > 0)
         {
           forecast.chart[index] = "Maybe";
@@ -75,7 +101,12 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
   }
  
   console.log(forecast.score);
-
+  console.log(ideal_times);
+  var summary = "Summary of Ideal Times for Drying Outside<br>";
+  for (let index = 0; index < ideal_times.length; ++index) {
+    summary = summary + ideal_times[index].day  + " " + ideal_times[index].timespan + " - Score: " + Math.round(ideal_times[index].totalscore) + "<br>"
+  }
+  document.getElementById("summary").innerHTML = summary;
   /*var mydata = getArray(forecast);
   console.log(mydata);
   const filter2 = mydata.filter(d => d.ideal == true);
@@ -195,8 +226,6 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
         "size": 12
       }
     },
-    "clickmode": "select+event",
-    "dragmode": "select",
     "xaxis": {
       "title": {
         "text": "",
@@ -206,7 +235,10 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
         }
       },
       "type": "-",
-      "tickformat": "%a",
+      "dtick": (60 * 60 * 1000) * 4,
+      "tickformat": '%H\n %a',
+      "showgrid": true,
+      "ticks": "outside", 
       "ticklabelmode" : "period",
       "automargin": true,
       "fixedrange": true,
@@ -244,6 +276,7 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=" + args.lat + "&longitud
       "overlaying": "y",
       "side": "right",
       "range": [0,15],
+      "showgrid": false,
       "rangemode": "nonnegative"
     },
     "barmode": "stack"
