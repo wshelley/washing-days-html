@@ -1,3 +1,14 @@
+
+// Resize Chart
+document.getElementById("myDiv").style.width=98 + '%';
+window.onresize = function() {
+  // dont resize too much
+  if (window.innerWidth > 1000)
+  {
+    Plotly.Plots.resize('myDiv')
+  }
+};
+
 function reloadWashingDays() {
   var args = {
     lat: document.getElementById("lat").value,
@@ -224,7 +235,7 @@ function reloadWashingDays() {
         }
       },
       "font": {
-        "family": "Inter",
+        "family": "Open Sans, verdana, arial, sans-serif",
         "color": "#979797"
       },
       "showlegend": true,
