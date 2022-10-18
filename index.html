@@ -6,11 +6,13 @@
 <body onload="reloadWashingDays()">
   <div id='summary' style="font-family: monospace"></div>
   <br>
+  <br>
   <label style="font-family: monospace" for="lat" >Lat:</label>
-  <input type="text" id="lat" name="lat" value="55.75"><br><br>
+  <input type="text" id="lat" size="4" name="lat" value="55.75">
   <label style="font-family: monospace" for="lon">Lon:</label>
-  <input type="text" id="lon" name="lon" value="-3.35"><br><br>
-  <button type="button" onclick="reloadWashingDays()">Reload</button>
+  <input type="text" id="lon" size="4" name="lon" value="-3.35">
+  <button type="button" style="width:100" onclick="reloadWashingDays()">Reload</button>
+  <br>
   <br>
 	<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
   <script src='chart.js'></script>
