@@ -52,13 +52,13 @@ function reloadWashingDays() {
         var startTime;
         forecast.rainlarge[index] = forecast.precipitation[index] * 20;
         var sunscore = forecast.direct_radiation[index];
-        var windscore = (2 *  forecast.windspeed_10m[index]);
+        var windscore = (3 *  forecast.windspeed_10m[index]);
         var humidityscore = (100 - forecast.relativehumidity_2m[index])/100;
         forecast.score[index] =  (sunscore + windscore) * humidityscore;
         if (forecast.temperature_2m[index] > 0 &&
         forecast.relativehumidity_2m[index] < 80 &&
         forecast.precipitation[index] == 0 &&
-        forecast.windspeed_10m[index] > 5 &&
+        forecast.windspeed_10m[index] > 10 &&
         forecast.windgusts_10m[index] < 40 &&
         forecast.direct_radiation[index] > 50)
         {
