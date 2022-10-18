@@ -58,9 +58,9 @@ function reloadWashingDays() {
         if (forecast.temperature_2m[index] > 0 &&
         forecast.relativehumidity_2m[index] < 80 &&
         forecast.precipitation[index] == 0 &&
-        forecast.windspeed_10m[index] > 10 &&
+        forecast.direct_radiation[index] > 50 &&
         forecast.windgusts_10m[index] < 40 &&
-        forecast.direct_radiation[index] > 50)
+        (forecast.windspeed_10m[index] > 10 || forecast.windgusts_10m[index] > 15))
         {
           forecast.chart[index] = "Ideal";
           if (started == false)
@@ -133,6 +133,26 @@ function reloadWashingDays() {
         "hovertemplate": "<b>%{x}</b><br>%{fullData.name}: %{y}<extra></extra>",
         "marker": {
           "color": "#DAECFC"
+        }
+      },
+      {
+        "name": "Windspeed Gusts (mph)",
+        "x": forecast.time,
+        "y": forecast.windgusts_10m,
+        "type": "line",
+        "hovertemplate": "<b>%{x}</b><br>%{fullData.name}: %{y}<extra></extra>",
+        "marker": {
+          "color": "#DAECFC"
+        }
+      },
+      {
+        "name": "Relative Humidity",
+        "x": forecast.time,
+        "y": forecast.relativehumidity_2m,
+        "type": "line",
+        "hovertemplate": "<b>%{x}</b><br>%{fullData.name}: %{y}<extra></extra>",
+        "marker": {
+          "color": "#DAECDC"
         }
       },
       {
