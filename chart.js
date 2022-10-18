@@ -106,7 +106,7 @@ function reloadWashingDays() {
     console.log(ideal_times);
     var summary = "Summary of Ideal Times for Drying Outside<br>";
     for (let index = 0; index < ideal_times.length; ++index) {
-      if (ideal_times[index].timespan_hrs > 3)
+      if (ideal_times[index].timespan_hrs > 2)
       {
         summary = summary + ideal_times[index].day  + " " + ideal_times[index].timespan + " - Score: " + Math.round(ideal_times[index].totalscore) + "<br>"
       }
